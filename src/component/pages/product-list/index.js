@@ -1,63 +1,107 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
+import { Col, Row } from 'reactstrap';
 
 import ProductCard from './../../product/ProductCard';
+import setProducts from '../../../actions/setProducts';
+import setChangeProducts from '../../../actions/setChangeProducts';
 import ProductsAPI from '../../../common/ProductsAPI';
+import setIsLoading from '../../../actions/setIsLoading';
 
 const ProductList = props => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    console.log('useEFFECT');
-    const { location } = props;
-    const queryParams = queryString.parse(location.search);
-    const text = queryParams.query;
-    async function getProductsData(input) {
-      const productsAPIResponse = await ProductsAPI.getProductsByText(input);
-      console.log('productsAPIResponse: ', productsAPIResponse);
-      setProducts(productsAPIResponse.items);
-      setLoading(false);
+    const {
+      products,
+      changeProducts,
+      setChangeProducts,
+      setProducts,
+      location
+    } = props;
+    if (products && products.length > 0) {
+      setProducts(products);
+    } else {
+      const query = queryString.parse(location.search);
+      const textToSearch = query.query;
+      async function getProductsData(text) {
+        try {
+          const productsAPIResponse = await ProductsAPI.getProductsByText(text);
+          setIsLoading(true);
+          setProducts(productsAPIResponse.items);
+          setChangeProducts(!changeProducts);
+          setIsLoading(false);
+        } catch (err) {
+          setChangeProducts(!changeProducts);
+          setIsLoading(false);
+        }
+      }
+      getProductsData(textToSearch);
     }
-    getProductsData(text);
-  }, [false]);
+  }, [props.changeProducts, props.isLoading]);
 
-  if (loading) {
+  const { products, isLoading } = props;
+
+  if (isLoading) {
     return (
       <>
-        <h1>Cargando datos...</h1>
+        <h1>Cargando data...</h1>
       </>
     );
   }
 
-  if (products && products.length > 0) {
-    console.log('productss!: ', products);
-
+  if (isLoading && products && products.length == 0) {
     return (
       <>
-        <div>
-          {products.map((product, index) => (
-            <ProductCard product={product} key={index} />
-          ))}
-        </div>
+        <h1>No hay products encontrados</h1>
       </>
     );
   }
-
   return (
     <>
-      <h3>No hay productos encontrados para tu búsqueda</h3>
+      <div>
+        {products.map((product, index) => (
+          <Row key={index}>
+            <Col xs={3} key={index}></Col>
+            <Col xs={6} key={index}>
+              <ProductCard product={product} key={index} />
+            </Col>
+            <Col xs={3} key={index}></Col>
+          </Row>
+        ))}
+      </div>
     </>
   );
 };
 
-export default ProductList;
+const mapStateToProps = state => ({
+  isLoading: state.isLoadingReducer.isLoading,
+  products: state.productsReducer.productsData,
+  changeProducts: state.changeProductsReducer.changeProductsData
+});
+
+const mapDispatchToProps = dispatch => ({
+  setProducts: products => dispatch(setProducts(products)),
+  setChangeProducts: changeProducts =>
+    dispatch(setChangeProducts(changeProducts))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductList);
 
 ProductList.defaultProps = {
-  location: {}
+  location: {},
+  products: [],
+  setProducts: () => {},
+  setChangeProducts: () => {},
+  changeProducts: false,
+  isLoading: false
 };
 
 ProductList.propTypes = {
-  location: PropTypes.object
+  location: PropTypes.object,
+  products: PropTypes.array,
+  setProducts: PropTypes.func,
+  setChangeProducts: PropTypes.func,
+  changeProducts: PropTypes.bool,
+  isLoading: PropTypes.bool
 };
