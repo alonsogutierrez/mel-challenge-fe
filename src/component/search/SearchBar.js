@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Container, Col, Row, Input } from 'reactstrap';
+import { Container, Col, Row, Input, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 const SearchBar = props => {
@@ -15,16 +15,16 @@ const SearchBar = props => {
     setSearchText(textInputFormatted);
   };
 
-  const onSearchSubmit = e => {
+  const onSearchSubmit = async e => {
     e.preventDefault();
-    props.history.push(`/search?query=${searchText}`);
+    props.history.push(`/items?query=${searchText}`);
   };
   return (
     <>
       <Container>
-        <Row>
-          <Col>
-            <form role='search' onSubmit={e => onSearchSubmit(e)}>
+        <form role='search' onSubmit={e => onSearchSubmit(e)}>
+          <Row>
+            <Col xs='10'>
               <Input
                 type='search'
                 maxLength={150}
@@ -32,11 +32,15 @@ const SearchBar = props => {
                 placeholder='Ingresa tu búsqueda'
                 value={searchText}
                 onChange={e => handleSearchInput(e)}></Input>
-            </form>
-          </Col>
-        </Row>
+            </Col>
+            <Col xs='2'>
+              <Button type='submit' onClick={e => onSearchSubmit(e)}>
+                <img src={'/assets/ic_Search.png'}></img>
+              </Button>
+            </Col>
+          </Row>
+        </form>
       </Container>
-      >
     </>
   );
 };
