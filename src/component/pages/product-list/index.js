@@ -1,33 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { Col, Row } from 'reactstrap';
 
+import BreadCrumb from '../../breadcrumb';
 import ProductCard from './../../product/ProductCard';
+import ProductsAPI from '../../../common/ProductsAPI';
+
+import setCategories from '../../../actions/setCategories';
+import setUbication from '../../../actions/setUbication';
 import setProducts from '../../../actions/setProducts';
 import setChangeProducts from '../../../actions/setChangeProducts';
-import ProductsAPI from '../../../common/ProductsAPI';
 import setIsLoading from '../../../actions/setIsLoading';
 
 const ProductList = props => {
   useEffect(() => {
     const {
+      ubication,
       products,
       changeProducts,
       setChangeProducts,
+      setCategories,
       setProducts,
+      setUbication,
       location
     } = props;
-    if (products && products.length > 0) {
-      setProducts(products);
-    } else {
+    if (!products || products.length === 0) {
       const query = queryString.parse(location.search);
       const textToSearch = query.query;
       async function getProductsData(text) {
         try {
           const productsAPIResponse = await ProductsAPI.getProductsByText(text);
+          console.log('productsAPIResponse ****: ', productsAPIResponse);
           setIsLoading(true);
+          setCategories(productsAPIResponse.categories);
+          if (ubication !== productsAPIResponse.ubication) {
+            setUbication(productsAPIResponse.ubication);
+          }
           setProducts(productsAPIResponse.items);
           setChangeProducts(!changeProducts);
           setIsLoading(false);
@@ -40,7 +50,7 @@ const ProductList = props => {
     }
   }, [props.changeProducts, props.isLoading]);
 
-  const { products, isLoading } = props;
+  const { products, isLoading, categories, ubication } = props;
 
   if (isLoading) {
     return (
@@ -57,18 +67,39 @@ const ProductList = props => {
       </>
     );
   }
+  const productsListContainerStyle = {
+    height: 'max-content',
+    width: '100%',
+    paddingTop: '10px',
+    paddingLeft: '5px',
+    paddingRight: '5px',
+    backgroundColor: '#EEEEEEEE',
+    paddingBottom: '40px'
+  };
+  const productRowStyle = {};
+  const productColumnStyle = {
+    backgroundColor: 'white'
+  };
+  let categoriesList = '';
+  if (categories.length > 0) {
+    categoriesList = categories.join(' > ');
+  }
+
   return (
     <>
-      <div>
-        {products.map((product, index) => (
-          <Row key={index}>
-            <Col xs={3} key={index}></Col>
-            <Col xs={6} key={index}>
-              <ProductCard product={product} key={index} />
-            </Col>
-            <Col xs={3} key={index}></Col>
-          </Row>
-        ))}
+      <div style={{ height: '100vh' }}>
+        <BreadCrumb categories={categoriesList} />
+        <div style={productsListContainerStyle}>
+          {products.map((product, index) => (
+            <Row key={index} style={productRowStyle}>
+              <Col lg={1}></Col>
+              <Col lg={10} style={productColumnStyle}>
+                <ProductCard product={product} ubication={ubication} />
+              </Col>
+              <Col lg={1}></Col>
+            </Row>
+          ))}
+        </div>
       </div>
     </>
   );
@@ -76,11 +107,16 @@ const ProductList = props => {
 
 const mapStateToProps = state => ({
   isLoading: state.isLoadingReducer.isLoading,
+  categories: state.categoriesReducer.categoriesData,
+  ubication: state.ubicationReducer.ubicationData,
   products: state.productsReducer.productsData,
-  changeProducts: state.changeProductsReducer.changeProductsData
+  changeProducts: state.changeProductsReducer.changeProductsData,
+  productsAPIResponse: state.productsAPIResponseReducer.productsAPIResponseData
 });
 
 const mapDispatchToProps = dispatch => ({
+  setCategories: categories => dispatch(setCategories(categories)),
+  setUbication: ubication => dispatch(setUbication(ubication)),
   setProducts: products => dispatch(setProducts(products)),
   setChangeProducts: changeProducts =>
     dispatch(setChangeProducts(changeProducts))
@@ -91,6 +127,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(ProductList);
 ProductList.defaultProps = {
   location: {},
   products: [],
+  ubication: '',
+  setCategories: () => {},
+  setUbication: () => {},
   setProducts: () => {},
   setChangeProducts: () => {},
   changeProducts: false,
@@ -100,6 +139,9 @@ ProductList.defaultProps = {
 ProductList.propTypes = {
   location: PropTypes.object,
   products: PropTypes.array,
+  ubication: PropTypes.string,
+  setCategories: PropTypes.func,
+  setUbication: PropTypes.func,
   setProducts: PropTypes.func,
   setChangeProducts: PropTypes.func,
   changeProducts: PropTypes.bool,
