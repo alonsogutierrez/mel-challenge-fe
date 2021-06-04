@@ -76,7 +76,6 @@ const ProductList = props => {
     backgroundColor: '#EEEEEEEE',
     paddingBottom: '40px'
   };
-  const productRowStyle = {};
   const productColumnStyle = {
     backgroundColor: 'white'
   };
@@ -91,7 +90,7 @@ const ProductList = props => {
         <BreadCrumb categories={categoriesList} />
         <div style={productsListContainerStyle}>
           {products.map((product, index) => (
-            <Row key={index} style={productRowStyle}>
+            <Row key={index}>
               <Col lg={1}></Col>
               <Col lg={10} style={productColumnStyle}>
                 <ProductCard product={product} ubication={ubication} />

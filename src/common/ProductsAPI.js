@@ -30,6 +30,21 @@ const getProductsByText = async text => {
   }
 };
 
+const getProductById = async id => {
+  try {
+    const client = bffInstance();
+    const response = await client.request({
+      url: `/api/items/${id}`,
+      method: 'get',
+      params: {}
+    });
+    return response.data;
+  } catch (err) {
+    throw new Error(`Can't get product by id ${err.message}`);
+  }
+};
+
 export default {
-  getProductsByText
+  getProductsByText,
+  getProductById
 };
