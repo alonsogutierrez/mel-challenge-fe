@@ -5,6 +5,7 @@ import queryString from 'query-string';
 import { Col, Row } from 'reactstrap';
 
 import BreadCrumb from '../../breadcrumb';
+import SEO from '../../seo';
 import ProductCard from './../../product/ProductCard';
 import ProductsAPI from '../../../common/ProductsAPI';
 
@@ -86,6 +87,14 @@ const ProductList = props => {
 
   return (
     <>
+      {categories.length > 0 && (
+        <SEO
+          title={'Busqueda de productos'}
+          description={categoriesList}
+          pathSlug={`/items?q=`}
+          keywords={['Busqueda', 'productos', 'Mercado Libre']}
+        />
+      )}
       <div style={{ height: '100vh' }}>
         <BreadCrumb categories={categoriesList} />
         <div style={productsListContainerStyle}>

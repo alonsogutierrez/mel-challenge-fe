@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 const API_BFF_URL = process.env.API_BFF_URL || 'http://localhost:3000';
-
-const logger = console;
-
-logger.info('BaseURL: ', API_BFF_URL);
+const AUTHOR_SIGN = process.env.AUTHOR_SIGN || 'Alonso Gutierrez';
 
 const bffInstance = () => {
   const bffInstance = axios.create({
@@ -20,6 +17,9 @@ const getProductsByText = async text => {
     const response = await client.request({
       url: '/api/items',
       method: 'get',
+      headers: {
+        sign: `Sign ${AUTHOR_SIGN}`
+      },
       params: {
         q: text
       }
@@ -36,6 +36,9 @@ const getProductById = async id => {
     const response = await client.request({
       url: `/api/items/${id}`,
       method: 'get',
+      headers: {
+        sign: `Sign ${AUTHOR_SIGN}`
+      },
       params: {}
     });
     return response.data;

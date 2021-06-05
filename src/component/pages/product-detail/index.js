@@ -42,8 +42,8 @@ const ProductDetailPage = props => {
     <>
       {product.id && (
         <SEO
-          title={'Product detail page'}
-          description={product.title}
+          title={product.title}
+          description={product.description}
           pathSlug={`/items/${product.id}`}
           keywords={[product.id, product.title]}
         />
