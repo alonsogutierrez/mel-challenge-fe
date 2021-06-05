@@ -3,6 +3,9 @@ const APP_SOURCE = path.join(__dirname, 'server');
 
 module.exports = {
   mode: 'production',
+  node: {
+    fs: 'empty'
+  },
   entry: { index: path.resolve(APP_SOURCE, 'index.js') },
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -16,15 +19,7 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         }
-      },
-      {
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'css-loader'
-        }
-      },
-      { test: /\.css$/, loader: 'ignore-loader' }
+      }
     ]
   }
 };
