@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import SEO from '../../seo';
 import BreadCrumb from '../../breadcrumb';
 import ProductDetail from '../../product/ProductDetail';
 
@@ -10,6 +11,8 @@ import ProductsAPI from '../../../common/ProductsAPI';
 const ProductDetailPage = props => {
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log('isLoading: ', isLoading);
 
   useEffect(async () => {
     const {
@@ -31,16 +34,25 @@ const ProductDetailPage = props => {
   }, [product.id]);
 
   let { categories } = props;
-  if (categories.length > 0) {
+  if (categories && categories.length > 0) {
     categories = categories.join(' > ');
   }
 
   return (
     <>
+      {product.id && (
+        <SEO
+          title={'Product detail page'}
+          description={product.title}
+          pathSlug={`/items/${product.id}`}
+          keywords={[product.id, product.title]}
+        />
+      )}
+
       <div style={{ height: '100vh' }}>
-        <BreadCrumb categories={categories} />
-        {product.id && <ProductDetail product={product} />}
         {!product.id && <div>Loading...</div>}
+        {product.id && <BreadCrumb categories={categories} />}
+        {product.id && <ProductDetail product={product} />}
       </div>
     </>
   );

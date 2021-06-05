@@ -1,15 +1,30 @@
 const path = require('path');
+const APP_SOURCE = path.join(__dirname, 'server');
 
 module.exports = {
-  entry: {
-    client: './src/index.js',
-    bundle: './src/bundle.js'
-  },
+  mode: 'production',
+  entry: { index: path.resolve(APP_SOURCE, 'index.js') },
   output: {
-    path: path.resolve(__dirname, 'assets'),
-    filename: 'index.js'
+    path: path.resolve(__dirname, 'build'),
+    filename: '[name].js'
   },
   module: {
-    rules: [{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }]
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'css-loader'
+        }
+      },
+      { test: /\.css$/, loader: 'ignore-loader' }
+    ]
   }
 };

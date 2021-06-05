@@ -1,35 +1,41 @@
 {
-  "name": "FrontEnd MercadoLibre Challenge",
+  "name": "mel-fe",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@babel/preset-env": "^7.14.4",
-    "@babel/preset-react": "^7.13.13",
-    "@babel/register": "^7.13.16",
     "axios": "^0.21.1",
-    "bootstrap": "^5.0.0",
+    "bootstrap": "^5.0.1",
     "express": "^4.17.1",
     "history": "^5.0.0",
     "ignore-styles": "^5.0.1",
-    "npm-run-all": "^4.1.5",
     "prop-types": "^15.7.2",
     "query-string": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
     "reactstrap": "^8.9.0",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
-    "regenerator-runtime": "^0.13.7"
+    "request": "^2.79.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "@babel/preset-react": "^7.13.13",
+    "@babel/register": "^7.13.16",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "babel-loader": "8.1.0",
+    "css-loader": "^5.2.6",
+    "ignore-loader": "^0.1.2",
     "nodemon": "^2.0.7",
-    "redux-devtools-extension": "^2.13.9"
+    "npm-run-all": "^4.1.5",
+    "react-scripts": "4.0.3",
+    "redux-devtools-extension": "^2.13.9",
+    "webpack-cli": "^4.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -38,8 +44,9 @@
     "eject": "react-scripts eject",
     "ssr": "node server/index.js",
     "dev:build-server": "NODE_ENV=development webpack --config webpack.config.js --mode=development -w",
-    "dev:start": "nodemon ./server-build/index.js",
-    "dev": "npm-run-all --parallel build dev:*"
+    "dev:start": "nodemon ./build/index.js",
+    "dev": "npm-run-all --parallel build dev:*",
+    "build:ssr": "webpack --config webpack.config.js"
   },
   "eslintConfig": {
     "extends": [
