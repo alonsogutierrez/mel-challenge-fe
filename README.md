@@ -6,10 +6,16 @@ We are trying to pass the MercadoLibreChallenge.
 
 We created a Server Side Rendering React App to allow our site will be indexed and ranked by Googlebots and of course improve our SEO !
 
-# How to run app ?
+# How to run app in local?
 
-1.- Install dependencies: `npm install`
+1.- Install dependencies: `yarn`
 
-2.- Build app: `npm run build`
+2.- Build and run app: `yarn dev`
 
-3.- Run app in server side rendering mode: `npm run ssr`
+3.- Run dependencies in local
+
+# Dependencies
+
+MercadoLibreChallenge Backend:
+
+=> Repository: https://github.com/alonsogutierrez/mel-challenge-be
